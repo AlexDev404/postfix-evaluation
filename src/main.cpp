@@ -1,7 +1,14 @@
+// Name: Immanuel Garcia
+// Topic: Assignment 2
+// Teacher: Ms. Vernelle Sylvester
+// Subject: Data Stuctures
+// Date: 23th November, 2023
+
 #include <iostream>
 #include <stack>
 #include <string>
 
+// Stack class for storing integer values
 class Stack {
 public:
     void push(int value) {
@@ -22,6 +29,7 @@ private:
     std::stack<int> data;
 };
 
+// Function to calculate the result of an arithmetic operation
 int calculate(char op, int x, int y) {
     switch (op) {
         case '+':{
@@ -52,18 +60,19 @@ int calculate(char op, int x, int y) {
     }
 }
 
+// Function to evaluate a postfix expression and return the result
 int evaluatePostfixExpression(const std::string& expression) {
-    Stack stack;
-    for (char c : expression) {
-        if (isdigit(c)) {
-            stack.push(c - '0');
-        } else {
-            int x = stack.pop();
-            int y = stack.pop();
-            stack.push(calculate(c, x, y));
+    Stack stack; // Create an instance of the Stack class to store the operands
+    for (char c : expression) { // Iterate through each character in the expression
+        if (isdigit(c)) { // If the character is a digit
+            stack.push(c - '0'); // Convert the character to an integer and push it onto the stack
+        } else { // If the character is an operator
+            int x = stack.pop(); // Pop the top operand from the stack
+            int y = stack.pop(); // Pop the second operand from the stack
+            stack.push(calculate(c, x, y)); // Perform the calculation using the operator and operands, and push the result onto the stack
         }
     }
-    return stack.pop();
+    return stack.pop(); // Return the final result by popping it from the stack
 }
 
 int main() {
