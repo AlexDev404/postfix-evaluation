@@ -1,124 +1,74 @@
-// Name: Renee Banner
-// Topic: Assignment 2
-// Teacher: Ms. Vernelle Sylvester
-// Subject: Data Stuctures
-// Date:20th November, 2023
-
 #include <iostream>
-using std::cout;
+#include <stack>
+#include <string>
 
 class Stack {
 public:
-    int data;
-    Stack *Next;
+    void push(int value) {
+        data.push(value);
+    }
+
+    int pop() {
+        int value = data.top();
+        data.pop();
+        return value;
+    }
+
+    bool isEmpty() {
+        return data.empty();
+    }
+
+private:
+    std::stack<int> data;
 };
 
-int calculate(char exp, int x, int y) {
-    int result = 0;
-    int j;
-
-    if (exp == '+')
-        result = y + x;
-
-    else if (exp == '-')
-    {
-        if (x > y)
-        {
-            j = y;
-            y = x;
-            x = j;
+int calculate(char op, int x, int y) {
+    switch (op) {
+        case '+':{
+            return y + x;
         }
-        result = y - x;
-    }
-    else if (exp == '*') {
-        result = y * x;
-    }
-    else if (exp == '/') {
-        if (x > y)
-        {
-            j = y;
-            y = x;
-            x = j;
+        case '-':{
+            return y - x;
         }
-        result = y / x;
-    }
-    else if (exp == '^')
-    {
-
-        int d = 1;
-        for (int i = 0; i < x; i++)
-        {
-            d = d * y;
+        case '*':{
+            return y * x;
         }
-        result = d;
-    }
-    else if (exp == '%')
-        result = y % x;
-
-    return result;
-}
-bool isEmpty(Stack *&head)
-{
-    if (head == NULL)
-        return true;
-    else
-        return false;
-}
-void push(int a, Stack **head)
-{
-
-    Stack *newNode = new Stack;
-    newNode->data = a;
-    newNode->Next = *head;
-    *head = newNode;
-}
-void pop(Stack **head)
-{
-    if (isEmpty(*head))
-        cout << "\nThe stack is empty";
-    else
-        *head = (*head)->Next;
-}
-
-void printStack(Stack *head)
-{
-    while (!isEmpty(head))
-    {
-        cout << "The answer to your expression is: " << head->data;
-        pop(&head);
-    }
-
-    cout << "\nThe stack is now empty\n";
-}
-
-void evaluatePostfixExpression(string express, Stack *head)
-{
-
-    int i = 0;
-
-    while (express[i] != '\0')
-    {
-
-        if (isdigit(express[i]))
-            push(express[i] - '0', &head);
-
-        else
-        {
-            int x = head->data;
-            pop(&head);
-            int y = head->data;
-            pop(&head);
-            push(calculate(express[i], x, y), &head);
+        case '/':{
+            return y / x;
         }
-        i++;
+        case '^':{
+            int result = 1;
+            for (int i = 0; i < x; i++) {
+                result *= y;
+            }
+            return result;
+        }
+        case '%':{
+            return y % x;
+        }
+        default:{
+            return 0;
+        }
     }
-    printStack(head);
 }
-int main()
-{
-    Stack *head = NULL;
-    string expression = "62+5*48/-";
 
-    evaluatePostfixExpression(expression, head);
+int evaluatePostfixExpression(const std::string& expression) {
+    Stack stack;
+    for (char c : expression) {
+        if (isdigit(c)) {
+            stack.push(c - '0');
+        } else {
+            int x = stack.pop();
+            int y = stack.pop();
+            stack.push(calculate(c, x, y));
+        }
+    }
+    return stack.pop();
+}
+
+int main() {
+    std::string expression = "62+5*48/-";
+    int result = evaluatePostfixExpression(expression);
+    std::cout << "The answer to your expression is: " << result << std::endl;
     return 0;
 }
